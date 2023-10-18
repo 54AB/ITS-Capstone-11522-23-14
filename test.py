@@ -128,11 +128,11 @@ plt.show()
 # print('Mean_absolute_error:', mean_absolute_error(y_test, rf_tuned_pred))
 # print('Root mean squared error:', np.sqrt(mean_squared_error(y_test, rf_tuned_pred)))
 
-# {'n_estimators': 1300, 'max_leaf_nodes': 19, 'max_depth': 17}
-# Execution time: 0.08809804916381836 seconds
-# Mean_squared_error: 0.008968249131119736
-# Mean_absolute_error: 0.07658579341292801
-# Root mean squared error: 0.0947008401816992
+# {'n_estimators': 1200, 'max_leaf_nodes': 19, 'max_depth': 14}
+# Execution time: 0.08797478675842285 seconds
+# Mean_squared_error: 0.007258249239987148
+# Mean_absolute_error: 0.0687096634763948
+# Root mean squared error: 0.0851953592632084
 # Used all three feature
 
 
@@ -186,13 +186,13 @@ plt.show()
 
 
 # Fitting 10 folds for each of 50 candidates, totalling 500 fits
-# -0.005038332788620951
+# -0.0047626990806459045
 # {'subsample': 0.5, 'min_child_weight': 2, 'max_depth': 5, 'learning_rate': 0.1, 'gamma': 0.01, 'colsample_bytree': 1.0}
-# Execution time: 0.0009999275207519531 seconds
-# Mean_squared_error: 0.006288296948720376
-# Mean_absolute_error: 0.062254807971414486
-# Root mean squared error: 0.07929878276947494
-# With All three day dayofweek month
+# Execution time: 0.0009984970092773438 seconds
+# Mean_squared_error: 0.003172404203592458
+# Mean_absolute_error: 0.043073104028770924
+# Root mean squared error: 0.05632409966961264
+# With all created variable
 
 
 # def convert_to_X_y(dataframe, window, forecasting_time):
@@ -252,7 +252,7 @@ plt.show()
 # print('Mean_absolute_error:', mean_absolute_error(y_test, test_prediction))
 # print('Root mean squared error:', np.sqrt(mean_squared_error(y_test, test_prediction)))
 
-# Execution time: 0.18426227569580078 seconds
+# Execution time: 0.17746639251708984 seconds
 # Mean_squared_error: 0.006711800736504271
 # Mean_absolute_error: 0.05915758494359119
 # Root mean squared error: 0.08192558047706633
