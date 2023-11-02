@@ -25,53 +25,63 @@ df['day'] = df['date'].dt.day
 df['dayOfWeek'] = df['date'].dt.dayofweek
 
 
-# print(df)
-# plt.figure(figsize=(20, 10))
+
+# fig, axs = plt.subplots(2, 1, figsize=(12,12))
+# fig.tight_layout(pad=5)
 # ave_demand_month = df.groupby(['month', 'year'])['demand'].mean().reset_index()
-# lp = sns.lineplot(ave_demand_month, x="month", y="demand", hue='year', palette=sns.color_palette("husl", 6), errorbar=('ci',False))
-# plt.title('Average demand of each year in months')
-# lp.set_xticks(range(1, 13))
-# lp.set_xticklabels(['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])
-# plt.legend(loc = 'upper right')
-# plt.show()
+# monthPlot = sns.lineplot(ave_demand_month, x="month", y="demand", hue='year', palette=sns.color_palette("husl", 6), errorbar=('ci',False), ax=axs[0])
+# monthPlot.set_title('Average demand group by month and day of week', fontsize=22)
+# monthPlot.set_xlabel('Month', fontsize = 20)
+# monthPlot.set_xticks(range(1, 13))
+# monthPlot.set_ylabel('Average Demand', fontsize=20)
+# monthPlot.tick_params(labelsize = 20)
+# monthPlot.set_xticklabels(['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], fontsize = 20)
+# monthPlot.tick_params(axis='y', labelsize = 20)
+# monthPlot.legend(loc = 'upper right', fontsize=13)
+
+
 
 # ave_demand_day = df.groupby(['dayOfWeek', 'year'])['demand'].mean().reset_index()
 # print(ave_demand_day)
-# lp = sns.lineplot(ave_demand_day, x="dayOfWeek", y="demand", hue='year', palette=sns.color_palette("husl", 6), errorbar=('ci',False))
-# plt.title('Average demand of each year in weekday')
-# lp.set_xticks(range(0,7))
-# lp.set_xticklabels(['Mon','Tue','Wed','Thu','Fri','Sat','Sun'])
-# plt.legend(loc = 'upper right')
+# dayPlot = sns.lineplot(ave_demand_day, x="dayOfWeek", y="demand", hue='year', palette=sns.color_palette("husl", 6), errorbar=('ci',False), ax=axs[1])
+# # dayPlot.set_title('Average demand of each year in weekday', fontsize=15)
+# dayPlot.set_xticks(range(0,7))
+# dayPlot.tick_params(labelsize = 20)
+# dayPlot.set_xlabel('Weekday', fontsize = 20)
+# dayPlot.set_ylabel('Aveage Demand', fontsize=20)
+# dayPlot.set_xticklabels(['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], fontsize = 20)
+# dayPlot.tick_params(axis='y', labelsize = 20)
+# dayPlot.legend(loc = 'upper right', fontsize=13)
 # plt.show()
 
 df['Max_Temp_log'] = np.log(df['max_temperature'].values)
-fig, axs = plt.subplots(1, 2, figsize=(8,5), )
-sns.histplot(x = df['max_temperature'], ax=axs[0], kde=True, color='red')
-sns.histplot(x = df['Max_Temp_log'], ax=axs[1], kde=True, color='orange')
-plt.show()
+# fig, axs = plt.subplots(1, 2, figsize=(8,5), )
+# sns.histplot(x = df['max_temperature'], ax=axs[0], kde=True, color='red')
+# sns.histplot(x = df['Max_Temp_log'], ax=axs[1], kde=True, color='orange')
+# plt.show()
 
-# scaled_df=MinMaxScaler().fit_transform(df[['demand',
-#                                             'RRP',
-#                                             'min_temperature',
-#                                             #'max_temperature',
-#                                             'solar_exposure',
-#                                             'rainfall',
-#                                             'Max_Temp_log']])
-# scaled_df=pd.DataFrame(scaled_df, columns=['demand',
-#                                            'RRP',
-#                                             'min_temperature',
-#                                             #'max_temperature',
-#                                             'solar_exposure',
-#                                             'rainfall',
-#                                             'Max_Temp_log'])
-# scaled_df['holiday'] = df['holiday']
-# scaled_df['school_day'] = df['school_day']
-# scaled_df['month'] = df['month']
-# scaled_df['day'] = df['day']
-# scaled_df['year'] = df['year']
-# scaled_df['dayOfWeek'] = df['dayOfWeek']
+scaled_df=MinMaxScaler().fit_transform(df[['demand',
+                                            'RRP',
+                                            'min_temperature',
+                                            #'max_temperature',
+                                            'solar_exposure',
+                                            'rainfall',
+                                            'Max_Temp_log']])
+scaled_df=pd.DataFrame(scaled_df, columns=['demand',
+                                           'RRP',
+                                            'min_temperature',
+                                            #'max_temperature',
+                                            'solar_exposure',
+                                            'rainfall',
+                                            'Max_Temp_log'])
+scaled_df['holiday'] = df['holiday']
+scaled_df['school_day'] = df['school_day']
+scaled_df['month'] = df['month']
+scaled_df['day'] = df['day']
+scaled_df['year'] = df['year']
+scaled_df['dayOfWeek'] = df['dayOfWeek']
 
-
+print(scaled_df.head(n=4))
 # print(scaled_df)
 
 # heat_map, ax = plt.subplots(figsize=(10, 10)) #Set size of the heat map
@@ -136,53 +146,65 @@ plt.show()
 # Used all three feature
 
 
+scaled_df.index = demand_dataset['date']
+print(scaled_df)
+pd.to_datetime(scaled_df.index)
+
+train = scaled_df.loc[scaled_df.index < '2019-01-01']
+test = scaled_df.loc[scaled_df.index >= '2019-01-01']
 
 # train = scaled_df.loc[scaled_df.index < 1461]
 # test = scaled_df.loc[scaled_df.index >= 1461]
 
-# x_train = train.drop(labels='demand', axis=1)
-# y_train = train['demand']
-# x_test = test.drop(labels='demand', axis=1)
-# y_test = test['demand']
+x_train = train.drop(labels='demand', axis=1)
+y_train = train['demand']
+x_test = test.drop(labels='demand', axis=1)
+y_test = test['demand']
 
 
-# from xgboost import XGBRegressor
-# import warnings
-# from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
-# import time
-# warnings.simplefilter(action='ignore', category=FutureWarning)
-# xgb = XGBRegressor(n_jobs = -1, objective = 'reg:squarederror')
-# xgb_params = {
-#         'learning_rate' : [0.001, 0.001, 0.01, 0.1, 0.2, 0.3],
-#         'min_child_weight': np.arange(1, 10, 1),
-#         "max_depth": np.arange(3, 10, 1),
-#         'gamma': [0.01, 0.1, 0.2, 0.3, 0.4, 0.5],
-#         'subsample': np.arange(0.5, 1, 0.1),
-#         'colsample_bytree': [0.6, 0.8, 1.0],
-#         #'max_depth': [3, 4, 5]
-# }
+from xgboost import XGBRegressor
+import warnings
+from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
+import time
+warnings.simplefilter(action='ignore', category=FutureWarning)
+xgb = XGBRegressor(n_jobs = -1, objective = 'reg:squarederror')
+xgb_params = {
+        'learning_rate' : [0.001, 0.001, 0.01, 0.1, 0.2, 0.3],
+        'min_child_weight': np.arange(1, 10, 1),
+        "max_depth": np.arange(3, 10, 1),
+        'gamma': [0.01, 0.1, 0.2, 0.3, 0.4, 0.5],
+        'subsample': np.arange(0.5, 1, 0.1),
+        'colsample_bytree': [0.6, 0.8, 1.0],
+        #'max_depth': [3, 4, 5]
+}
 
-# xgb_randomSearch = RandomizedSearchCV(xgb, xgb_params, scoring='neg_mean_squared_error', verbose=1, cv=10, random_state=2, n_iter=50)
-# xgb_randomSearch.fit(x_train, y_train)
+xgb_randomSearch = RandomizedSearchCV(xgb, xgb_params, scoring='neg_mean_squared_error', verbose=1, cv=10, random_state=2, n_iter=50)
+xgb_randomSearch.fit(x_train, y_train)
 
-# print(xgb_randomSearch.best_score_)
-# print(xgb_randomSearch.best_params_)
-# xgb_tuned = xgb_randomSearch.best_estimator_
-# xgb_start_time = time.time()
-# xgb_tuned_pred = xgb_tuned.predict(x_test)
-# xgb_end_time = time.time()
-# xgb_tuned_pred = pd.Series(xgb_tuned_pred, index=y_test.index)
-# plt.rcParams["figure.figsize"] = (20,5)
-# plt.plot(xgb_tuned_pred ,label = "XGB_prediction", linestyle = 'dashdot')
-# plt.plot(y_test, label = 'Actual Demand')#, linestyle = 'dashdot')
-# plt.legend(loc = 'upper right')
-# plt.show()
-# print("Execution time:", xgb_end_time - xgb_start_time, "seconds")
-# from sklearn.metrics import mean_squared_error, mean_absolute_error
+print(xgb_randomSearch.best_score_)
+print(xgb_randomSearch.best_params_)
+xgb_tuned = xgb_randomSearch.best_estimator_
+xgb_start_time = time.time()
+xgb_tuned_pred = xgb_tuned.predict(x_test)
+xgb_end_time = time.time()
+xgb_tuned_pred = pd.Series(xgb_tuned_pred, index=y_test.index)
+plt.rcParams["figure.figsize"] = (20,5)
+plt.plot(xgb_tuned_pred ,label = "XGB_prediction", linestyle = 'dashdot')
+plt.suptitle("Prediction vs. Actual Demand - XGB", fontsize= 20)
+plt.plot(y_test, label = 'Actual Demand')#, linestyle = 'dashdot')
+plt.locator_params(axis='x', nbins=5)
+plt.legend(loc = 'upper right', fontsize=15)
+xgbPlot= plt.gca()
+import matplotlib.dates as mdates
+xgbPlot.xaxis.set_major_locator(mdates.MonthLocator(interval=3))
+plt.show()
+print("Execution time:", xgb_end_time - xgb_start_time, "seconds")
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
-# print('Mean_squared_error:', mean_squared_error(y_test, xgb_tuned_pred))
-# print('Mean_absolute_error:', mean_absolute_error(y_test, xgb_tuned_pred))
-# print('Root mean squared error:', np.sqrt(mean_squared_error(y_test, xgb_tuned_pred)))
+print('Mean_squared_error:', mean_squared_error(y_test, xgb_tuned_pred))
+print('Mean_absolute_error:', mean_absolute_error(y_test, xgb_tuned_pred))
+print('Root mean squared error:', np.sqrt(mean_squared_error(y_test, xgb_tuned_pred)))
+print('R^2 Score is:', r2_score(y_test, xgb_tuned_pred))
 
 
 # Fitting 10 folds for each of 50 candidates, totalling 500 fits
@@ -251,6 +273,8 @@ plt.show()
 # print('Mean_squared_error:', mean_squared_error(y_test, test_prediction))
 # print('Mean_absolute_error:', mean_absolute_error(y_test, test_prediction))
 # print('Root mean squared error:', np.sqrt(mean_squared_error(y_test, test_prediction)))
+# print('R^2 Score is:', r2_score(y_test, test_prediction))
+
 
 # Execution time: 0.17746639251708984 seconds
 # Mean_squared_error: 0.006711800736504271
